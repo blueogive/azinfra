@@ -23,10 +23,13 @@ RUN apt-get update --fix-missing \
         curl \
         git \
         gnupg2 \
+        jq \
         locales \
         lsb-release \
         make \
         openssh-client \
+        python3-pip \
+        python3-setuptools \
         software-properties-common \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
@@ -59,7 +62,7 @@ ENV LC_ALL=en_US.UTF-8 \
     CT_UID=1000 \
     CT_GID=100 \
     CT_FMODE=0775 \
-    HOME=/home/docker/work
+    HOME=/home/docker
 
 # Install Azure CLI and Terraform
 RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | \
@@ -73,7 +76,9 @@ RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | \
     && apt update \
     && ACCEPT_EULA=Y apt install -y --no-install-recommends azure-cli terraform \
     && apt-get clean \
-    && ln -s /usr/bin/python3 /usr/bin/python
+    && ln -s /usr/bin/python3 /usr/bin/python \
+    && ln -s /usr/bin/pip3 /usr/bin/pip \
+    && pip install jmespath-terminal
 
 ARG VCS_URL=${VCS_URL}
 ARG VCS_REF=${VCS_REF}
@@ -88,6 +93,11 @@ LABEL org.label-schema.license="https://opensource.org/licenses/MIT" \
     org.label-schema.vcs-ref=${VCS_REF} \
     org.label-schema.build-date=${BUILD_DATE} \
     maintainer="Mark Coggeshall <mark.coggeshall@gmail.com>"
+
+RUN useradd --shell /bin/bash --create-home --uid ${CT_UID} --gid ${CT_GID} ${CT_USER}
+RUN mkdir -p ${HOME}/work
+RUN chown -R ${CT_USER}:${CT_GID} ${HOME}
+USER ${CT_USER}
 
 WORKDIR ${HOME}/work
 
