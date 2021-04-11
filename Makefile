@@ -5,6 +5,8 @@ VCS_URL := $(shell git remote get-url --push gh)
 VCS_REF := $(shell git rev-parse --short HEAD)
 BUILD_DATE := $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 TAG_DATE := $(shell date -u +"%Y%m%d")
+# Line below prompts user for a value, stores in a Make variable.
+# PASSWORD ?= $(shell bash -c 'read -s -p "Password: " pwd; echo $$pwd')
 # Use BuildKit
 export DOCKER_BUILDKIT := 1
 

@@ -16,6 +16,7 @@ USER root
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update --fix-missing \
+    && apt-get upgrade -y \
     && apt-get install -y \
         --no-install-recommends \
         apt-transport-https \
@@ -78,7 +79,16 @@ RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | \
     && apt-get clean \
     && ln -s /usr/bin/python3 /usr/bin/python \
     && ln -s /usr/bin/pip3 /usr/bin/pip \
-    && pip install jmespath-terminal
+    && pip install jmespath-terminal \
+    && az config set extension.use_dynamic_install=yes_without_prompt \
+    && az extension add --name account \
+    && az extension add --name azure-cli-ml \
+    && az extension add --name azure-devops \
+    && az extension add --name costmanagement \
+    && az extension add --name datafactory \
+    && az extension add --name ssh \
+    && az extension add --name storagesync \
+    && az extension add --name synapse
 
 ARG VCS_URL=${VCS_URL}
 ARG VCS_REF=${VCS_REF}
