@@ -23,8 +23,6 @@ docker-check :
 
 docker-build: Dockerfile docker-login
 	@docker build \
-	--build-arg CONDA_ENV_FILE=$(CONDA_ENV_FILE) \
-	--build-arg PIP_REQ_FILE=$(PIP_REQ_FILE) \
 	--build-arg VCS_URL=$(VCS_URL) \
 	--build-arg VCS_REF=$(VCS_REF) \
 	--build-arg BUILD_DATE=$(BUILD_DATE) \

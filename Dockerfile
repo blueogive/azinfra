@@ -10,7 +10,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-FROM ubuntu:bionic-20200713
+FROM ubuntu:focal-20210723
 
 USER root
 ENV DEBIAN_FRONTEND=noninteractive
@@ -32,6 +32,7 @@ RUN apt-get update --fix-missing \
         python3-pip \
         python3-setuptools \
         software-properties-common \
+        unixodbc \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
@@ -43,7 +44,7 @@ RUN curl -o microsoft.asc https://packages.microsoft.com/keys/microsoft.asc \
     && apt-key add microsoft.asc \
     && rm microsoft.asc \
     && curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list > /etc/apt/sources.list.d/mssql-release.list \
-    && add-apt-repository "$(curl https://packages.microsoft.com/config/ubuntu/18.04/mssql-server-2019.list)" \
+    && add-apt-repository "$(curl https://packages.microsoft.com/config/ubuntu/20.04/mssql-server-2019.list)" \
     && apt-get update \
     && ACCEPT_EULA=Y apt-get install -y --no-install-recommends \
         msodbcsql17 \
@@ -78,17 +79,7 @@ RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | \
     && ACCEPT_EULA=Y apt install -y --no-install-recommends azure-cli terraform \
     && apt-get clean \
     && ln -s /usr/bin/python3 /usr/bin/python \
-    && ln -s /usr/bin/pip3 /usr/bin/pip \
-    && pip install jmespath-terminal \
-    && az config set extension.use_dynamic_install=yes_without_prompt \
-    && az extension add --name account \
-    && az extension add --name azure-cli-ml \
-    && az extension add --name azure-devops \
-    && az extension add --name costmanagement \
-    && az extension add --name datafactory \
-    && az extension add --name ssh \
-    && az extension add --name storagesync \
-    && az extension add --name synapse
+    && pip install jmespath-terminal azure-core azure-mgmt-core
 
 ARG VCS_URL=${VCS_URL}
 ARG VCS_REF=${VCS_REF}

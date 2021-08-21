@@ -1,4 +1,4 @@
-# MSSQL SSIS
+# Azure Development
 
 This repo contains a `Dockerfile` to build
 a Linux [Docker](https://www.docker.com) image containing the Microsoft
